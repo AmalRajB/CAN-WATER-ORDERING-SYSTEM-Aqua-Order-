@@ -1,0 +1,76 @@
+/* MyOrders.module.css */
+
+.ordersContainer {
+  max-width: 1000px;
+  margin: 40px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.orderCard {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.orderCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.orderInfo {
+  margin-bottom: 15px;
+}
+
+.orderInfo p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.orderActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.btnUpdate {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btnUpdate:hover {
+  background-color: #0056b3;
+}
+
+.btnCancel {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btnCancel:hover {
+  background-color: #a71d2a;
+}
+
+@media (max-width: 768px) {
+  .ordersContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+}

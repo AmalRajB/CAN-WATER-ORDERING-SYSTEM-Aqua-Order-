@@ -1,0 +1,52 @@
+/* Navbar background */
+.custom-navbar {
+  background: linear-gradient(90deg, #0d6efd, #084298);
+  padding: 0.7rem 0;
+}
+
+/* Brand */
+.custom-navbar .navbar-brand {
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+/* Nav links */
+.custom-navbar .nav-link {
+  color: #ffffff !important;
+  margin: 0 0.5rem;
+  font-weight: 500;
+  position: relative;
+}
+
+/* Hover effect */
+.custom-navbar .nav-link:hover {
+  color: #ffdd57 !important;
+}
+
+/* Active underline effect */
+.custom-navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #ffdd57;
+  transition: width 0.3s ease;
+}
+
+.custom-navbar .nav-link:hover::after {
+  width: 100%;
+}
+
+/* Logout button */
+.custom-navbar .btn-outline-light {
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+
+.custom-navbar .btn-outline-light:hover {
+  background-color: #ffdd57;
+  color: #000;
+  border-color: #ffdd57;
+}

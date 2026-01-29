@@ -1,0 +1,121 @@
+.bannerContainer {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+}
+
+/* Make banner responsive */
+.bannerImage {
+  object-fit: cover;
+}
+
+/* Button overlay */
+.bannerContent {
+  position: absolute;
+  bottom: 100px;
+  left: 250px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.bookNowBtn {
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bookNowBtn:hover {
+  background-color: #084298;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .bannerContainer {
+    height: 70vh;
+  }
+
+  .bookNowBtn {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bannerContainer {
+    height: 60vh;
+  }
+
+  .bookNowBtn {
+    width: 100%;
+  }
+}
+
+/* Services Section */
+.servicesSection {
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.sectionTitle {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+.cardsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 300px;
+    max-width: 350px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: left;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    color: #0d6efd;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Responsive updates for services */
+@media (max-width: 768px) {
+    .sectionTitle {
+        font-size: 2rem;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+}
