@@ -1,52 +1,56 @@
 "use client"
 
-import React, { useEffect, useState } from "react";
-import { myAppHook } from "@/context/AppProvider";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react"
+import { myAppHook } from "@/context/AppProvider"
+import { useRouter } from "next/navigation"
 
 interface FormData {
-    name?: string;
-    email: string;
-    password: string;
-    password_confirmation?: string;
+    name?: string
+    email: string
+    password: string
+    password_confirmation?: string
 }
 
 const Auth: React.FC = () => {
-    const [islogin, setislogin] = useState(true);
+    const [islogin, setislogin] = useState(true)
     const [formdata, setformdata] = useState<FormData>({
         name: "",
         email: "",
         password: "",
         password_confirmation: ""
-    });
+    })
 
-    const router = useRouter();
-    const { login, register, authToken, isloading } = myAppHook();
+    const router = useRouter()
+    const { login, register, authToken, role, isloading } = myAppHook()
 
     useEffect(() => {
-        if (!isloading && authToken) {
-            router.replace("/userhome");
+        if (isloading) return
+
+        if (authToken && role === "admin") {
+            router.replace("/admin/home")
         }
-    }, [authToken, isloading, router]);
+
+        if (authToken && role === "user") {
+            router.replace("/user/userhome")
+        }
+    }, [authToken, role, isloading, router])
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
-        e.preventDefault();
+        e.preventDefault()
 
         if (islogin) {
-            await login(formdata.email, formdata.password);
+            await login(formdata.email, formdata.password)
         } else {
             await register(
                 formdata.name!,
                 formdata.email,
                 formdata.password,
                 formdata.password_confirmation!
-            );
+            )
         }
-    };
-
-    if (isloading) {
-        return null;
     }
+
+    if (isloading) return null
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -113,14 +117,14 @@ const Auth: React.FC = () => {
                     {islogin ? "Don't have an account? " : "Already have an account? "}
                     <span
                         onClick={() => setislogin(!islogin)}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: "pointer", color: "blue" }}
                     >
                         {islogin ? "Register" : "Login"}
                     </span>
                 </p>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Auth;
+export default Auth

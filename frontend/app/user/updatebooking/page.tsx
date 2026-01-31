@@ -1,5 +1,5 @@
 "use client"
-import styles from "./WaterBookingForm.module.css";
+import styles from "./WaterBookingupdateForm.module.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 const Booking: React.FC = () => {
@@ -9,7 +9,7 @@ const Booking: React.FC = () => {
         <>
             <Navbar />
             <div className={styles.formContainer}>
-                <h3 className={styles.formTitle}>Water Can Booking</h3>
+                <h3 className={styles.formTitle}>Update Booking</h3>
                 <form >
                     <div className={styles.formGroup}>
                         <label>Full Name</label>
@@ -49,11 +49,9 @@ const Booking: React.FC = () => {
                     <div className={styles.formGroup}>
                         <label>Address Proof</label>
                         <input
-                            type="text"
+                            type="file"
                             name="addressProof"
-                            // value={formData.addressProof}
-                            // onChange={handleChange}
-                            placeholder="Enter address proof (optional)"
+                            accept=".pdf,.jpg,.jpeg,.png"
                         />
                     </div>
 

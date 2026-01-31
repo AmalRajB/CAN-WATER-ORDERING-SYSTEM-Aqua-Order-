@@ -6,9 +6,11 @@ import axios from "axios"
 import toast, { Toast } from "react-hot-toast"
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
+
 interface AppProviderType {
     isloading: boolean,
     authToken: string | null,
+    role: "admin" | "user" | null
     login: (email: string, password: string) => Promise<void>,
     register: (name: string, email: string, password: string, password_confirmation: string) => Promise<void>
     logout: () => void
@@ -27,17 +29,23 @@ export const AppProvider = ({
 
     const [isloading, setisloading] = useState<boolean>(true)
     const [authToken, setAuthToken] = useState<string | null>(null)
+    const [role, setRole] = useState<"admin" | "user" | null>(null)
+
     const router = useRouter()
 
     useEffect(() => {
-        const token = Cookies.get("authToken");
-        if (token) {
+        const token = Cookies.get("authToken")
+        const savedRole = Cookies.get("role")
+
+        if (token && (savedRole === "admin" || savedRole === "user")) {
             setAuthToken(token)
+            setRole(savedRole)
         } else {
             router.replace("/auth")
         }
         setisloading(false)
-    },[])
+    }, [])
+
 
     const login = async (email: string, password: string) => {
 
@@ -50,20 +58,30 @@ export const AppProvider = ({
                 password
             });
             if (response.data.status) {
+                const userRole = response.data.user.role
                 Cookies.set("authToken", response.data.token, {
                     expires: 7,
-                    path: "/",      
+                    path: "/",
                     sameSite: "lax"
                 })
-                toast.success("login success..")
+                Cookies.set("role", userRole, { expires: 7 })
                 setAuthToken(response.data.token)
-                router.push("/userhome")
+                setRole(userRole)
+                toast.success("login success..")
+
+                if (userRole === "admin") {
+                    router.push("/admin/home")
+                } else {
+                    router.push("/user/userhome")
+                }
+
             } else {
                 toast.error("invalid login details..")
             }
 
         } catch (error) {
             console.log(error)
+            toast.error("Login failed")
 
         } finally {
             setisloading(false)
@@ -99,6 +117,7 @@ export const AppProvider = ({
     const logout = () => {
         setAuthToken(null)
         Cookies.remove("authToken")
+        Cookies.remove("role")
         setisloading(false)
         toast.success("user logout successfully")
         router.replace("/auth")
@@ -106,7 +125,7 @@ export const AppProvider = ({
     }
 
     return (
-        <AppContext.Provider value={{ login, register, isloading, authToken, logout }}>
+        <AppContext.Provider value={{ login, register, isloading, authToken, logout, role }}>
             {isloading ? <Loader /> : children}
         </AppContext.Provider>
     )
