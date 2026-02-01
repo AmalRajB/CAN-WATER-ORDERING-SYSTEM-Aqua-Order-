@@ -8,6 +8,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import toast, { Toast } from "react-hot-toast"
+
+type LaravelValidationErrors = {
+  [key: string]: string[];
+};
+
 
 interface BookingType {
     fullname: string;
@@ -35,14 +41,12 @@ const Booking: React.FC = () => {
         address_proff: "",
     });
 
-    /* 🔐 Auth Guard */
     useEffect(() => {
         if (!authToken) {
             router.replace("/auth");
         }
     }, [authToken, router]);
 
-    /* 📝 Handle Input Change */
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, files, type } = event.target;
 
@@ -60,7 +64,6 @@ const Booking: React.FC = () => {
         }
     };
 
-    /* 📤 Handle Form Submit */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -72,31 +75,38 @@ const Booking: React.FC = () => {
         formPayload.append("quantity", String(formdata.quantity));
 
         if (formdata.file) {
-            formPayload.append("address_proof", formdata.file);
+            formPayload.append("address_proff", formdata.file);
         }
 
         console.log("Form Submitted:", Object.fromEntries(formPayload.entries()));
 
-        // 👉 API CALL GOES HERE (axios / fetch)
-        try{
-            const response = await axios.post(`${API_URL}/bookings`,
-                formdata,{
+        try {
+            const response = await axios.post(
+                `${API_URL}/bookings`,
+                formPayload,
+                {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
-                        "Content-Type":"multipart/form-data"
-                    }
-
+                    },
                 }
+            );
 
-            )
-            console.log(response)
+            console.log(response.data);
+            router.push("/user/userhome")
+            toast.success("booking is success..")
 
-        }catch(error){
-            console.log(error)
+
+        } catch (error: any) {
+            if (error.response?.data?.errors) {
+                const errors = error.response.data.errors as LaravelValidationErrors;
+                const firstError = Object.values(errors)[0][0];
+                toast.error(firstError);
+            } else {
+                toast.error("Something went wrong");
+            }
 
         }
     };
-
 
     return (
         <>
