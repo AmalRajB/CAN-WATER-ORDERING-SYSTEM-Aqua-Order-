@@ -29,25 +29,32 @@ export default function AdminDashboard() {
             {/* Main */}
             <main className={`${styles.main} ${sidebarCollapsed ? styles.mainCollapsed : ""}`}>
                 <div className={styles.content}>
-                    <div className={styles.statsGrid}>
-                        {statsCards.map((stat, i) => {
-                            const Icon = stat.icon;
-                            return (
-                                <div key={stat.title} className={styles.statCard} style={{ animationDelay: `${i * 0.1}s` }}>
-                                    <div className={styles.statHeader}>
-                                        <div className={styles.statIcon}>
-                                            <Icon />
+                    {activeNav === 'dashboard' && (
+                        <div className={styles.statsGrid}>
+                            {statsCards.map((stat, i) => {
+                                const Icon = stat.icon;
+                                return (
+                                    <div key={stat.title} className={styles.statCard} style={{ animationDelay: `${i * 0.1}s` }}>
+                                        <div className={styles.statHeader}>
+                                            <div className={styles.statIcon}>
+                                                <Icon />
+                                            </div>
+                                            <span className={stat.trend === "up" ? styles.up : styles.down}>{stat.change}</span>
                                         </div>
-                                        <span className={stat.trend === "up" ? styles.up : styles.down}>{stat.change}</span>
+                                        <h4>{stat.title}</h4>
+                                        <p>{stat.value}</p>
                                     </div>
-                                    <h4>{stat.title}</h4>
-                                    <p>{stat.value}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
 
-
+                    {activeNav !== 'dashboard' && (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                            <h2>{activeNav.charAt(0).toUpperCase() + activeNav.slice(1)} Component</h2>
+                            <p>This component is not yet implemented.</p>
+                        </div>
+                    )}
                 </div>
             </main>
         </div>

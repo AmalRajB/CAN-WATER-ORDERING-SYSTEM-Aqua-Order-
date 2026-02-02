@@ -6,3 +6,15 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// module.exports = {
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: "http",
+//         hostname: "localhost",
+//         port: "8000",
+//       },
+//     ],
+//   },
+// };

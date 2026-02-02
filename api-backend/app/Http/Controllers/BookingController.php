@@ -14,17 +14,21 @@ class BookingController extends Controller
      * - User: only their bookings
      * - Admin: all bookings
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            $bookings = Booking::with('user')->latest()->get();
+            $query = Booking::with('user');
         } else {
-            $bookings = Booking::where('user_id', $user->id)
-                ->latest()
-                ->get();
+            $query = Booking::where('user_id', $user->id);
         }
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $bookings = $query->latest()->get();
 
         return response()->json($bookings);
     }
@@ -85,7 +89,7 @@ class BookingController extends Controller
         $booking = Booking::findOrFail($id);
         $user = Auth::user();
 
-        // USER update (only if pending)
+        // ================= USER UPDATE =================
         if ($user->role !== 'admin') {
 
             if ($booking->user_id !== $user->id || $booking->status !== 'pending') {
@@ -93,42 +97,51 @@ class BookingController extends Controller
             }
 
             $data = $request->validate([
-                'delivery_date' => 'required|date|after_or_equal:today',
+                'delivery_date' => 'required|date',
                 'quantity'      => 'required|integer|min:1',
-                'address_proff' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                'mob_number'    => 'required|string',
+                'address'       => 'required|string',
+                'address_proff' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
             ]);
 
-            // Handle file update
+            // ✅ HANDLE FILE UPDATE
             if ($request->hasFile('address_proff')) {
 
-                // Delete old file if exists
-                if ($booking->address_proff) {
+                // 🔥 DELETE OLD FILE (SAFE)
+                if ($booking->address_proff && !str_starts_with($booking->address_proff, 'http')) {
                     Storage::disk('public')->delete($booking->address_proff);
                 }
 
-                // Store new file
-                $data['address_proff'] = $request
-                    ->file('address_proff')
-                    ->store('address_proofs', 'public');
+                // STORE NEW FILE
+                $path = $request->file('address_proff')->store('address_proofs', 'public');
+                $data['address_proff'] = $path;
             }
 
             $booking->update($data);
 
-            return response()->json(['message' => 'Booking updated']);
+            // ✅ RETURN UPDATED DATA WITH IMAGE URL
+            return response()->json([
+                'message' => 'Booking updated successfully',
+                'booking' => [
+                    ...$booking->toArray(),
+                    'address_proff' => $booking->address_proff
+                        ? asset('storage/' . $booking->address_proff)
+                        : null,
+                ],
+            ]);
         }
 
-    // ADMIN update
-    $request->validate([
-        'status' => 'required|in:pending,delivered'
-    ]);
+        // ================= ADMIN UPDATE =================
+        $request->validate([
+            'status' => 'required|in:pending,delivered'
+        ]);
 
-    $booking->update([
-        'status' => $request->status
-    ]);
+        $booking->update([
+            'status' => $request->status
+        ]);
 
-    return response()->json(['message' => 'Status updated']);
-}
-        /**
+        return response()->json(['message' => 'Status updated']);
+    }        /**
           * Delete booking (User can cancel if pending)
         */
     public function destroy(string $id)

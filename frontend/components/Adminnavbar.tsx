@@ -10,9 +10,11 @@ import {
     ChevronRight,
     Package,
     CreditCard,
+    LogOut,
+    type LucideIcon
 } from "lucide-react";
 import { myAppHook } from "@/context/AppProvider";
-
+import { useRouter } from "next/navigation";
 import styles from './style/AdminSidebar.module.css';
 
 interface SidebarProps {
@@ -22,6 +24,33 @@ interface SidebarProps {
     setSidebarCollapsed: (val: boolean) => void;
 }
 
+interface NavLinkProps {
+    id: string;
+    label: string;
+    icon: LucideIcon;
+    isActive: boolean;
+    onClick: (id: string) => void;
+    collapsed: boolean;
+}
+
+// Internal NavLink component to satisfy the "component" requirement 
+// while keeping everything in one file.
+const NavLink: React.FC<NavLinkProps> = ({ id, label, icon: Icon, isActive, onClick, collapsed }) => {
+    return (
+        <button
+            onClick={() => onClick(id)}
+            className={`${styles.navItem} ${isActive ? styles.active : ""}`}
+            title={collapsed ? label : undefined}
+        >
+            <Icon size={20} className={styles.itemIcon} />
+            {!collapsed && <span className={styles.itemLabel}>{label}</span>}
+            {isActive && !collapsed && <ChevronRight size={16} />}
+        </button>
+    );
+};
+
+
+
 const AdminSidebar: React.FC<SidebarProps> = ({
     activeNav,
     setActiveNav,
@@ -29,54 +58,105 @@ const AdminSidebar: React.FC<SidebarProps> = ({
     setSidebarCollapsed,
 }) => {
     const { logout } = myAppHook();
+    const router = useRouter();
 
-    const navItems = [
-        { id: "dashboard", icon: Home, label: "Dashboard" },
-        { id: "analytics", icon: BarChart3, label: "Analytics" },
-        { id: "users", icon: Users, label: "Users" },
-        { id: "products", icon: Package, label: "Products" },
-        { id: "transactions", icon: CreditCard, label: "Transactions" },
-        { id: "reports", icon: FileText, label: "Reports" },
-        { id: "settings", icon: Settings, label: "Settings" },
-    ];
+    const handleNavigation = (id: string) => {
+        setActiveNav(id);
+        if (id === 'dashboard') {
+            router.push('/admin/home');
+        }
+    };
 
     return (
         <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.sidebarCollapsed : ""}`}>
             <div className={styles.logo}>
                 <div className={styles.logoIcon}>A</div>
                 {!sidebarCollapsed && (
-                    <div>
+                    <div className={styles.logoText}>
                         <h1>Admin</h1>
-                        <span onClick={logout} style={{ cursor: "pointer", color: "red" }}>
-                            Logout
-                        </span>
                         <p>Dashboard</p>
                     </div>
                 )}
             </div>
 
             <nav className={styles.nav}>
-                {navItems.map((item, index) => {
-                    const Icon = item.icon;
-                    const isActive = activeNav === item.id;
+                <NavLink
+                    id="dashboard"
+                    label="Dashboard"
+                    icon={Home}
+                    isActive={activeNav === "dashboard"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="analytics"
+                    label="Analytics"
+                    icon={BarChart3}
+                    isActive={activeNav === "analytics"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="users"
+                    label="Users"
+                    icon={Users}
+                    isActive={activeNav === "users"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="products"
+                    label="Products"
+                    icon={Package}
+                    isActive={activeNav === "products"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="transactions"
+                    label="Transactions"
+                    icon={CreditCard}
+                    isActive={activeNav === "transactions"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="reports"
+                    label="Reports"
+                    icon={FileText}
+                    isActive={activeNav === "reports"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="settings"
+                    label="Settings"
+                    icon={Settings}
+                    isActive={activeNav === "settings"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
 
-                    return (
-                        <button
-                            key={item.id}
-                            onClick={() => setActiveNav(item.id)}
-                            className={`${styles.navItem} ${isActive ? styles.active : ""}`}
-                            style={{ animationDelay: `${index * 0.05}s` }}
-                        >
-                            <Icon />
-                            {!sidebarCollapsed && <span>{item.label}</span>}
-                            {isActive && !sidebarCollapsed && <ChevronRight />}
-                        </button>
-                    );
-                })}
+                {/* Logout Button as a Nav Item equivalent */}
+                <button
+                    onClick={logout}
+                    className={styles.navItem}
+                    style={{ marginTop: 'auto', color: '#ef4444' }}
+                    title={sidebarCollapsed ? "Logout" : undefined}
+                >
+                    <LogOut size={20} className={styles.itemIcon} />
+                    {!sidebarCollapsed && <span className={styles.itemLabel}>Logout</span>}
+                </button>
             </nav>
 
-            <button className={styles.collapseBtn} onClick={() => setSidebarCollapsed(!sidebarCollapsed)}>
-                <ChevronRight className={sidebarCollapsed ? "" : styles.rotate} />
+            <button
+                className={styles.collapseBtn}
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            >
+                <ChevronRight
+                    size={20}
+                    className={sidebarCollapsed ? "" : styles.rotate}
+                />
             </button>
         </aside>
     );
