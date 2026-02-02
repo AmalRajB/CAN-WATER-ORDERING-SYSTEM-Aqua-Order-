@@ -1,19 +1,29 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Admin\UserManagementController;
 
-Route::post("register", [AuthController::class, "register"] );
-Route::post("login", [AuthController::class, "login"] );
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+Route::post("register", [AuthController::class, "register"]);
+Route::post("login", [AuthController::class, "login"]);
 
+/*
+|--------------------------------------------------------------------------
+| Common Auth Routes (Admin + User)
+|--------------------------------------------------------------------------
+*/
 Route::middleware("auth:sanctum")->group(function () {
 
     Route::get("profile", [AuthController::class, "profile"]);
     Route::post("logout", [AuthController::class, "logout"]);
-
     Route::apiResource("bookings", BookingController::class);
+
 
 });
 
@@ -24,8 +34,8 @@ Route::middleware("auth:sanctum")->group(function () {
 */
 Route::middleware(["auth:sanctum", "role:user"])->group(function () {
 
-    // Route::get("user/dashboard", [UserController::class, "dashboard"]);
-    // Route::get("user/orders", [UserController::class, "orders"]);
+    // User bookings only
+    // Route::apiResource("bookings", BookingController::class);
 
 });
 
@@ -36,8 +46,13 @@ Route::middleware(["auth:sanctum", "role:user"])->group(function () {
 */
 Route::middleware(["auth:sanctum", "role:admin"])->group(function () {
 
-    // Route::get("admin/dashboard", [AdminController::class, "dashboard"]);
-    // Route::get("admin/users", [AdminController::class, "users"]);
-    // Route::post("admin/order-status", [AdminController::class, "updateOrderStatus"]);
+    // Admin fetch all users
+    Route::get("admin/users", [UserManagementController::class, "index"]);
+
+    // Admin block/unblock users
+    Route::patch(
+        "admin/users/{id}/toggle-status",
+        [UserManagementController::class, "toggleStatus"]
+    );
 
 });

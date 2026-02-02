@@ -20,7 +20,8 @@ class AuthController extends Controller
     $user = User::create([
         "name" => $data["name"],
         "email" => $data["email"],
-        "password" => Hash::make($data["password"])
+        "password" => Hash::make($data["password"]),
+        "is_active" => true    
     ]);
 
     return response()->json([
@@ -30,32 +31,46 @@ class AuthController extends Controller
 
     }
     //login api
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $request->validate([
             "email" => "required|email",
             "password" => "required"
         ]);
 
-        if(!Auth::attempt($request->only("email", "password"))){
+        // 1️⃣ Find user by email
+        $user = User::where('email', $request->email)->first();
+
+        // 2️⃣ Invalid credentials
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 "status" => false,
-                "message" => "invalid credentials"
-            ]);
+                "message" => "Invalid credentials"
+            ], 401);
         }
-        $user = Auth::user();
+
+        // 3️⃣ Block inactive users
+        if (!$user->is_active) {
+            return response()->json([
+                "status" => false,
+                "message" => "Your account has been blocked by admin"
+            ], 403);
+        }
+
+        // 4️⃣ Login + create token
+        Auth::login($user);
         $token = $user->createToken("myToken")->plainTextToken;
 
         return response()->json([
-            "status"=>true,
-            "message"=>"user logged in  successfully..",
-            "token"=>$token,
+            "status" => true,
+            "message" => "User logged in successfully",
+            "token" => $token,
             "user" => [
                 "id" => $user->id,
-                "role" => $user->role
+                "role" => $user->role,
+                "is_active" => $user->is_active
             ]
-            
         ]);
-
     }
     //see profilr api
     public function profile(){

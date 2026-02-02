@@ -62,9 +62,11 @@ const AdminSidebar: React.FC<SidebarProps> = ({
 
     const handleNavigation = (id: string) => {
         setActiveNav(id);
-        if (id === 'dashboard') {
-            router.push('/admin/home');
-        }
+        if (id === 'dashboard') router.push('/admin/home');
+        if (id === 'adminprofile') router.push('/admin/adminprofile');
+        if (id === 'manageuser') router.push('/admin/manageuser');
+        if (id === 'pendingorders') router.push('/admin/pendingorders');
+        if (id === 'deliverdorders') router.push('/admin/deliverdorders');
     };
 
     return (
@@ -89,42 +91,34 @@ const AdminSidebar: React.FC<SidebarProps> = ({
                     collapsed={sidebarCollapsed}
                 />
                 <NavLink
-                    id="analytics"
-                    label="Analytics"
-                    icon={BarChart3}
-                    isActive={activeNav === "analytics"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="users"
-                    label="Users"
+                    id="adminprofile"
+                    label="Admin Profile"
                     icon={Users}
-                    isActive={activeNav === "users"}
+                    isActive={activeNav === "adminprofile"}
                     onClick={handleNavigation}
                     collapsed={sidebarCollapsed}
                 />
                 <NavLink
-                    id="products"
-                    label="Products"
+                    id="manageuser"
+                    label="Manage User"
+                    icon={Users}
+                    isActive={activeNav === "manageuser"}
+                    onClick={handleNavigation}
+                    collapsed={sidebarCollapsed}
+                />
+                <NavLink
+                    id="pendingorders"
+                    label="Pending Orders"
                     icon={Package}
-                    isActive={activeNav === "products"}
+                    isActive={activeNav === "pendingorders"}
                     onClick={handleNavigation}
                     collapsed={sidebarCollapsed}
                 />
                 <NavLink
-                    id="transactions"
-                    label="Transactions"
-                    icon={CreditCard}
-                    isActive={activeNav === "transactions"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="reports"
-                    label="Reports"
-                    icon={FileText}
-                    isActive={activeNav === "reports"}
+                    id="deliverdorders"
+                    label="Delivered Orders"
+                    icon={Package}
+                    isActive={activeNav === "deliverdorders"}
                     onClick={handleNavigation}
                     collapsed={sidebarCollapsed}
                 />

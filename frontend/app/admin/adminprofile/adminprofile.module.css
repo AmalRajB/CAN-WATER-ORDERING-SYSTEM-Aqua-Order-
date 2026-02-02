@@ -1,0 +1,71 @@
+.profileContainer {
+  min-height: 91vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.profileImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid;
+  border-style: none;
+  margin-bottom: 20px;
+}
+
+.username {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.btnChange {
+  background-color: blue;
+  color: #fff;
+}
+
+.btnChange:hover {
+  background-color: rgb(62, 62, 234);
+}
+
+.btnLogout {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btnLogout:hover {
+  background-color: #a71d2a;
+}
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  padding: 40px;
+  background-color: #f8fafc;
+}
