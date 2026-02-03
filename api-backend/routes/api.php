@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\AdminMessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,11 @@ Route::middleware(["auth:sanctum", "role:admin"])->group(function () {
     Route::patch(
         "admin/users/{id}/toggle-status",
         [UserManagementController::class, "toggleStatus"]
+    );
+
+    Route::post(
+        'admin/bookings/alert',
+        [AdminMessageController::class, 'alertUser']
     );
 
 });

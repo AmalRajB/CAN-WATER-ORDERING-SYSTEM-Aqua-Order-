@@ -17,6 +17,8 @@ interface OrderType {
   delivery_date: string;
   quantity: number;
   status: string;
+  alert_sent: boolean;
+
 }
 
 
@@ -52,6 +54,39 @@ const PendingOrders: React.FC = () => {
       fetchdata();
     }
   }, [authToken, API_URL])
+
+
+  const sendAlertMessage = async (bookingId: number) => {
+    try {
+      await axios.post(`${API_URL}/admin/bookings/alert`,
+        { 'booking_id': bookingId },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          }
+        }
+
+      )
+      toast.success("alert message sented..")
+
+      setorders(prev =>
+        prev.map(order =>
+          order.id === bookingId
+            ? { ...order, alert_sent: true }
+            : order
+        )
+      )
+
+
+
+
+    } catch (error: any) {
+      console.log(error)
+      toast.error("already message sented...")
+
+    }
+
+  }
 
 
 
@@ -95,7 +130,13 @@ const PendingOrders: React.FC = () => {
                       <span className={styles.pending}>{order.status}</span>
                     </td>
                     <td>
-                      <button className={styles.viewBtn}>View</button>
+                      <button
+                        className={styles.viewBtn}
+                        disabled={order.alert_sent}
+                        onClick={() => sendAlertMessage(order.id)}
+                      >
+                        {order.alert_sent ? "Ongoing" : "Alert"}
+                      </button>
                     </td>
                   </tr>
                 ))}

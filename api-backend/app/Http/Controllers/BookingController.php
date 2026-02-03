@@ -6,6 +6,7 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AdminMessage;
 
 class BookingController extends Controller
 {
@@ -29,6 +30,14 @@ class BookingController extends Controller
         }
 
         $bookings = $query->latest()->get();
+
+        if($user->role ==='admin' && $request->status ==='pending'){
+            $bookings = $bookings->map(function($booking){
+                $booking->alert_sent = AdminMessage::where('booking_id', $booking->id)->exists();
+
+                return $booking;
+            });
+        }
 
         return response()->json($bookings);
     }
