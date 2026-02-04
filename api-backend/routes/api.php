@@ -24,6 +24,8 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("profile", [AuthController::class, "profile"]);
     Route::post("logout", [AuthController::class, "logout"]);
     Route::apiResource("bookings", BookingController::class);
+    Route::post('changepassword',[AuthController::class, 'changepassword']);
+
 
 
 });

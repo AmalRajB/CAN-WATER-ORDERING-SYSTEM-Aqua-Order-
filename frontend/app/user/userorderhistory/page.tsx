@@ -2,25 +2,61 @@
 
 import styles from "./OrderHistory.module.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer"
+import Footer from "@/components/footer";
+import { myAppHook } from "@/context/AppProvider";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+
+interface OrderType {
+    id: number;
+    fullname: string;
+    mob_number: string;
+    address: string;
+    quantity: number;
+    updated_at: string;
+    status: string;
+
+}
 
 const OrderHistory = () => {
-    const deliveredOrders = [
-        {
-            id: 101,
-            address: "123 Main Street, Chennai",
-            quantity: 2,
-            deliveryDate: "2026-01-10",
-            deliveredOn: "2026-01-10",
-        },
-        {
-            id: 102,
-            address: "45 Park Avenue, Bangalore",
-            quantity: 1,
-            deliveryDate: "2026-01-15",
-            deliveredOn: "2026-01-15",
-        },
-    ];
+
+    const { authToken } = myAppHook();
+    const router = useRouter();
+    const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
+    const [DeliverdData, setDeliverdData] = useState<OrderType[]>([])
+
+    useEffect(()=>{
+        if(!authToken){
+            router.replace("/auth")
+        }
+    },[authToken, router])
+
+    useEffect(()=>{
+
+        const fetchdata = async () =>{
+            try{
+                const response = await axios.get(`${API_URL}/bookings?status=delivered`,
+                    {
+                        headers:{
+                            Authorization:`Bearer ${authToken}`,
+                        }
+                    })
+                    setDeliverdData(response.data)
+
+            }catch(error){
+                toast.error("data fetching failed try again...")
+
+            }}
+            if(authToken){
+                fetchdata();
+            }
+
+    },[authToken, API_URL])
+
+
 
     return (
         <>
@@ -28,38 +64,38 @@ const OrderHistory = () => {
             <div className={styles.historyContainer}>
                 <h2 className={styles.pageTitle}>Order History</h2>
 
-                {deliveredOrders.length === 0 ? (
+                {DeliverdData.length === 0 ? (
                     <div className={styles.emptyState}>
                         No delivered orders yet.
                     </div>
                 ) : (
-                    deliveredOrders.map((order) => (
-                        <div key={order.id} className={styles.historyItem}>
+                    DeliverdData.map((data) => (
+                        <div key={data.id} className={styles.historyItem}>
                             <div className={styles.statusColumn}>
                                 <div className={styles.statusBadge}>Delivered</div>
-                                <div className={styles.date}>{order.deliveredOn}</div>
+                                <div className={styles.date}>{new Date(data.updated_at).toLocaleString()}</div>
                             </div>
 
                             <div className={styles.detailsColumn}>
                                 <div className={styles.detailsRow}>
                                     <span className={styles.label}>Order ID</span>
-                                    <span className={styles.value}>#{order.id}</span>
+                                    <span className={styles.value}>#{data.id}</span>
                                 </div>
 
                                 <div className={styles.detailsRow}>
                                     <span className={styles.label}>Delivery Address</span>
-                                    <span className={styles.value}>{order.address}</span>
+                                    <span className={styles.value}>{data.address}</span>
                                 </div>
 
                                 <div className={styles.detailsRow}>
                                     <span className={styles.label}>Can Quantity</span>
-                                    <span className={styles.value}>{order.quantity}</span>
+                                    <span className={styles.value}>{data.quantity}</span>
                                 </div>
 
-                                <div className={styles.detailsRow}>
+                                {/* <div className={styles.detailsRow}>
                                     <span className={styles.label}>Delivery Date</span>
                                     <span className={styles.value}>{order.deliveryDate}</span>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     ))

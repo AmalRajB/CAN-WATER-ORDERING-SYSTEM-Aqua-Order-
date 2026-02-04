@@ -141,15 +141,15 @@ class BookingController extends Controller
         }
 
         // ================= ADMIN UPDATE =================
-        $request->validate([
+        $data = $request->validate([
             'status' => 'required|in:pending,delivered'
         ]);
 
         $booking->update([
-            'status' => $request->status
+            'status' => $data['status']
         ]);
 
-        return response()->json(['message' => 'Status updated']);
+        return response()->json(['message' => 'Status updated' ,'status'=>$booking->status]);
     }        /**
           * Delete booking (User can cancel if pending)
         */

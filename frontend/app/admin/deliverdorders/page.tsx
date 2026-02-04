@@ -2,11 +2,70 @@
 
 import React from "react";
 import styles from "./DeliveredOrders.module.css";
-
 import AdminSidebar from "@/components/Adminnavbar";
+import { myAppHook } from "@/context/AppProvider";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+
+interface OrderType {
+  id: number;
+  fullname: string;
+  mob_number: string;
+  address: string;
+  quantity: number;
+  updated_at: string;
+  status: string;
+
+}
+
+
+
 
 const DeliveredOrders: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+
+    const { authToken } = myAppHook();
+    const router = useRouter();
+    const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
+    const [DeliverdData, setDeliverdData] = useState<OrderType[]>([])
+
+    useEffect(()=>{
+      if(!authToken){
+        router.replace("/auth")
+      }
+    },[authToken, router])
+
+    useEffect(()=>{
+      const fetchdata = async () =>{
+        try{
+          const response = await axios.get(`${API_URL}/bookings?status=delivered`,
+            {
+              headers:{
+                Authorization: `Bearer ${authToken}`,
+              }
+            }
+          )
+          setDeliverdData(response.data)
+
+        }catch(error){
+          toast.error("data fetching failed try again...")
+
+        }
+
+      }
+      if(authToken){
+        fetchdata();
+      }
+    },[authToken, API_URL])
+
+
+
+
+
+
 
   return (
     <div className={styles.wrapper}>
@@ -35,14 +94,14 @@ const DeliveredOrders: React.FC = () => {
               </thead>
 
               <tbody>
-                {[1, 2, 3].map((_, index) => (
-                  <tr key={index}>
-                    <td>#DEL-20{index}</td>
-                    <td>Ravi Kumar</td>
-                    <td>+91 98765 43210</td>
-                    <td>Anna Nagar, Chennai</td>
-                    <td>5 Cans</td>
-                    <td>2026-02-05</td>
+                {DeliverdData.map((data) => (
+                  <tr key={data.id}>
+                    <td>{data.id}</td>
+                    <td>{data.fullname}</td>
+                    <td>{data.mob_number}</td>
+                    <td>{data.address}</td>
+                    <td>{data.quantity}</td>
+                    <td>{new Date(data.updated_at).toLocaleString()}</td>
                     <td>
                       <span className={styles.delivered}>Delivered</span>
                     </td>

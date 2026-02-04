@@ -28,6 +28,7 @@ const PendingOrders: React.FC = () => {
   const router = useRouter();
   const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
   const [orders, setorders] = useState<OrderType[]>([])
+  
 
   useEffect(() => {
     if (!authToken) {
@@ -77,17 +78,12 @@ const PendingOrders: React.FC = () => {
         )
       )
 
-
-
-
     } catch (error: any) {
       console.log(error)
       toast.error("already message sented...")
 
     }
-
   }
-
 
 
 
@@ -115,6 +111,7 @@ const PendingOrders: React.FC = () => {
                   <th>Quantity</th>
                   <th>Status</th>
                   <th>Action</th>
+
                 </tr>
               </thead>
 
@@ -137,6 +134,7 @@ const PendingOrders: React.FC = () => {
                       >
                         {order.alert_sent ? "Ongoing" : "Alert"}
                       </button>
+                      <button onClick={() => router.push(`/admin/singleorder/${order.id}`)} >view</button>
                     </td>
                   </tr>
                 ))}
