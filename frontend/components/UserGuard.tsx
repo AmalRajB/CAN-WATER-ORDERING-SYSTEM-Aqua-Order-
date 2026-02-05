@@ -27,8 +27,8 @@ export default function UserGuard({
         }
     }, [role, authToken, isloading, router])
 
-    if (isloading) return null
-    if (!authToken || role !== "user") return null
+    if (isloading) return <div />
+    if (!authToken || role !== "user") return <div />
 
     return <>{children}</>
 }

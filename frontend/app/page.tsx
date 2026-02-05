@@ -1,17 +1,37 @@
 "use client"
-import Image from "next/image";
-import styles from "./page.module.css";
 import { myAppHook } from "@/context/AppProvider";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
 
-  const { logout } = myAppHook()
+  const { authToken, role } = myAppHook();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (authToken && role) {
+      if (role === 'admin') {
+        router.replace("/admin/home")
+      } else {
+        router.replace("/user/userhome")
+      }
+    }
+  }, [authToken, role, router])
+
+  if (authToken) {
+    return null;
+  }
+
+
+
+
+
 
 
   return <>
-  <h1>hii this is demo  page </h1>
-  <button  onClick={logout} >logout</button>
-  
-  
+    <h1>hii this is demo  page </h1>
+
+
   </>
 }

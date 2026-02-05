@@ -62,9 +62,7 @@
   transition: background 0.2s ease;
 }
 
-.viewBtn:hover {
-  background: #4f46e5;
-}
+
 
 .wrapper {
   display: flex;
@@ -76,4 +74,23 @@
   flex: 1;
   width: 100%;
   padding: 40px;
+}
+
+.singlebtn {
+  background: #82887f;
+  color: black;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-left: 5px;
+
+
+}
+
+.ongoingBtn {
+  background-color: red;
+  cursor: not-allowed;
 }

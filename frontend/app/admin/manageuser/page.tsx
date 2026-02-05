@@ -10,6 +10,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 
+
 interface Datatype {
   id: number;
   name: string,
@@ -26,6 +27,15 @@ const ManageUsers: React.FC = () => {
 
   const [data, setdata] = useState<Datatype[]>([])
 
+  const [currentpage, setcurrentpage] = useState(1);
+  const [lastpage, setlastpage] = useState(1);
+
+
+
+
+
+
+
   useEffect(() => {
     if (!authToken) {
       router.replace("/auth")
@@ -36,13 +46,15 @@ const ManageUsers: React.FC = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const response = await axios.get(`${API_URL}/admin/users`,
+        const response = await axios.get(`${API_URL}/admin/users?page=${currentpage}`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
             }
           })
-        setdata(response.data.data)
+        setdata(response.data.data.data)
+        setcurrentpage(response.data.data.current_page)
+        setlastpage(response.data.data.last_page)
       } catch (error) {
         toast.error("user data fetching failed try again...")
       }
@@ -50,7 +62,7 @@ const ManageUsers: React.FC = () => {
     if (authToken) {
       fetchdata();
     }
-  }, [authToken, API_URL])
+  }, [authToken, API_URL, currentpage])
 
   const performAction = async (id: number) => {
     try {
@@ -74,57 +86,87 @@ const ManageUsers: React.FC = () => {
 
 
 
+
   return (
-    <div className={styles.wrapper}>
-      <AdminSidebar
-        activeNav="manageuser"
-        setActiveNav={() => { }}
-        sidebarCollapsed={sidebarCollapsed}
-        setSidebarCollapsed={setSidebarCollapsed}
-      />
-      <main className={styles.main}>
-        <div className={styles.container}>
-          <h2 className={styles.title}>Manage Users</h2>
+    <>
+      <div className={styles.wrapper}>
+        <AdminSidebar
+          activeNav="manageuser"
+          setActiveNav={() => { }}
+          sidebarCollapsed={sidebarCollapsed}
+          setSidebarCollapsed={setSidebarCollapsed}
+        />
+        <main className={styles.main}>
+          <div className={styles.container}>
+            <h2 className={styles.title}>Manage Users</h2>
 
-          <div className={styles.card}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {Array.isArray(data) && data.map((value) => (
-                  <tr key={value.id}>
-                    <td>{value.id}</td>
-                    <td>{value.name}</td>
-                    <td>{value.email}</td>
-                    <td>
-                      <span className={value.is_active ? styles.active : styles.blocked}>
-                        {value.is_active ? "Active" : "Blocked"}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        className={value.is_active ? styles.blockBtn : styles.unblockBtn}
-                        onClick={() => performAction(value.id)}
-                      >
-                        {value.is_active ? "Block" : "Unblock"}
-                      </button>
-                    </td>
+            <div className={styles.card}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {Array.isArray(data) && data.map((value) => (
+                    <tr key={value.id}>
+                      <td>{value.id}</td>
+                      <td>{value.name}</td>
+                      <td>{value.email}</td>
+                      <td>
+                        <span className={value.is_active ? styles.active : styles.blocked}>
+                          {value.is_active ? "Active" : "Blocked"}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          className={value.is_active ? styles.blockBtn : styles.unblockBtn}
+                          onClick={() => performAction(value.id)}
+                        >
+                          {value.is_active ? "Block" : "Unblock"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              
+              <div className={styles.pagination}>
+                <button
+                  disabled={currentpage === 1}
+                  onClick={() => setcurrentpage(prev => prev - 1)}
+                >
+                  Previous
+                </button>
+
+                <span>
+                  Page {currentpage} of {lastpage}
+                </span>
+
+                <button
+                  disabled={currentpage === lastpage}
+                  onClick={() => setcurrentpage(prev => prev + 1)}
+                >
+                  Next
+                </button>
+              </div>
+
+
+
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+
+
+    </>
+
   );
 };
 

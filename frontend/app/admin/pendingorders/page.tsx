@@ -128,13 +128,13 @@ const PendingOrders: React.FC = () => {
                     </td>
                     <td>
                       <button
-                        className={styles.viewBtn}
+                       className={`${styles.viewBtn} ${order.alert_sent ? styles.ongoingBtn : ""}`}
                         disabled={order.alert_sent}
                         onClick={() => sendAlertMessage(order.id)}
                       >
                         {order.alert_sent ? "Ongoing" : "Alert"}
                       </button>
-                      <button onClick={() => router.push(`/admin/singleorder/${order.id}`)} >view</button>
+                      <button className={styles.singlebtn}  onClick={() => router.push(`/admin/singleorder/${order.id}`)} >view</button>
                     </td>
                   </tr>
                 ))}

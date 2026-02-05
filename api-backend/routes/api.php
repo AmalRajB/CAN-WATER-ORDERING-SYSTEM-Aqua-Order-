@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\AdminMessageController;
+use App\Http\Controllers\UserMessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,7 @@ Route::middleware(["auth:sanctum", "role:user"])->group(function () {
 
     // User bookings only
     // Route::apiResource("bookings", BookingController::class);
+    Route::get('notifications', [UserMessageController::class, 'myNotifications']);
 
 });
 

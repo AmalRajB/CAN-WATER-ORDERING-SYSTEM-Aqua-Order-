@@ -7,6 +7,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer"
 import Image from "next/image";
 import styles from "./userhome.module.css";
+import Link from "next/link";
+
 
 
 const userhome: React.FC = () => {
@@ -17,17 +19,11 @@ const userhome: React.FC = () => {
     useEffect(() => {
         if (!isloading && !authToken) {
             router.push("/auth")
-            return
         }
 
     }, [authToken, isloading, router]);
 
     if (isloading) return null;
-
-
-
-
-
 
 
     return <>
@@ -43,12 +39,11 @@ const userhome: React.FC = () => {
             />
 
             <div className={styles.bannerContent}>
-                <button
+                <Link href={"/user/booking"}
                     className={styles.bookNowBtn}
-                    onClick={() => router.push("/booking")}
                 >
                     Book Now
-                </button>
+                </Link>
             </div>
         </div>
 

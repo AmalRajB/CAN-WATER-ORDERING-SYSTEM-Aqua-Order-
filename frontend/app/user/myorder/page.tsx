@@ -103,6 +103,7 @@ const MyOrders: React.FC = () => {
                     {order.map((value) => (
                         <div key={value.id} className={styles.orderCard}>
                             <div className={styles.orderInfo}>
+                                <p><strong>OrderID:</strong> {value.id}</p>
                                 <p><strong>Name:</strong> {value.fullname}</p>
                                 <p><strong>Address:</strong> {value.address}</p>
                                 <p><strong>Delivery Date:</strong> {value.delivery_date}</p>

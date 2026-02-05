@@ -1,10 +1,14 @@
 "use client"
 
 import Link from "next/link";
-import { myAppHook } from "@/context/AppProvider";
+import { useState } from "react";
 
 const Navbar = () => {
-  const { logout } = myAppHook();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleNavbar = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark custom-navbar">
@@ -18,14 +22,15 @@ const Navbar = () => {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
+          onClick={toggleNavbar}
+          aria-expanded={isOpen}
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
         {/* Nav items */}
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-lg-center">
             <li className="nav-item">
               <Link href="/user/userhome" className="nav-link">
@@ -57,17 +62,14 @@ const Navbar = () => {
               </Link>
             </li>
 
+
+            {/* <li className="nav-item ms-lg-3"> */}
             <li className="nav-item">
-              <Link href="/user/userprofile" className="nav-link">
+              <Link className="btn btn-outline-light btn-sm" href="/user/userprofile" >
                 Profile
               </Link>
             </li>
 
-            <li className="nav-item ms-lg-3">
-              <button className="btn btn-outline-light btn-sm" onClick={logout}>
-                Logout
-              </button>
-            </li>
           </ul>
         </div>
       </div>

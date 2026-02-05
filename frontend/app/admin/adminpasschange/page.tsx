@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import styles from "./PasswordChange.module.css";
+import styles from "./AdminPasswordChange.module.css";
 
 
 type LaravelValidationErrors = {
@@ -81,16 +81,6 @@ const passwordchange = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
     return (
         <>
 
@@ -143,7 +133,7 @@ const passwordchange = () => {
                     <button className={styles.submitBtn}>Update</button>
                 </form>
 
-                <Link href="/user/userprofile" className={styles.backLink}>
+                <Link href="/admin/adminprofile" className={styles.backLink}>
                     Go back
                 </Link>
             </div>

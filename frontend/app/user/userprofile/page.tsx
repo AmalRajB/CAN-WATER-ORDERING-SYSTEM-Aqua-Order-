@@ -78,9 +78,7 @@ const UserProfile: React.FC = () => {
                 <div className={styles.username}>{email}</div>
 
                 <div className={styles.buttonGroup}>
-                    <button className={`${styles.btn} ${styles.btnChange}`}>
-                        <Link href={"/user/passwordchange"} >change password</Link>
-                    </button>
+                        <Link className={`${styles.btn} ${styles.btnChange}`} href={"/user/passwordchange"} >change password</Link>
                     <button onClick={logout} className={`${styles.btn} ${styles.btnLogout}`}>
                         Logout
                     </button>

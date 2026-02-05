@@ -44,7 +44,7 @@ export const AppProvider = ({
             router.replace("/auth")
         }
         setisloading(false)
-    }, [])
+    }, [router])
 
 
     const login = async (email: string, password: string) => {
@@ -129,8 +129,6 @@ export const AppProvider = ({
             {isloading ? <Loader /> : children}
         </AppContext.Provider>
     )
-
-
 
 }
 

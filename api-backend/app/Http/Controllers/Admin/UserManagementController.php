@@ -11,7 +11,7 @@ class UserManagementController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::paginate(4);
             return response()->json([
                 'status' => true,
                 'message' => 'Users retrieved successfully',
