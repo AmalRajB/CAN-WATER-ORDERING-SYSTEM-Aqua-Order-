@@ -24,14 +24,10 @@ const ManageUsers: React.FC = () => {
   const { authToken } = myAppHook();
   const router = useRouter();
   const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
-
   const [data, setdata] = useState<Datatype[]>([])
-
   const [currentpage, setcurrentpage] = useState(1);
   const [lastpage, setlastpage] = useState(1);
-
-
-
+  const [search, setsearch] = useState("");
 
 
 
@@ -43,26 +39,47 @@ const ManageUsers: React.FC = () => {
   }, [authToken, router])
 
 
+
   useEffect(() => {
-    const fetchdata = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/admin/users?page=${currentpage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            }
-          })
-        setdata(response.data.data.data)
-        setcurrentpage(response.data.data.current_page)
-        setlastpage(response.data.data.last_page)
-      } catch (error) {
-        toast.error("user data fetching failed try again...")
+    const delay = setTimeout(() => {
+      if (authToken) {
+        fetchdata();
       }
-    }
-    if (authToken) {
+    }, 400);
+
+    return () => clearTimeout(delay);
+  }, [search])
+
+
+  useEffect(()=>{
+    if(authToken){
       fetchdata();
     }
-  }, [authToken, API_URL, currentpage])
+  },[authToken, currentpage])
+
+
+
+  const fetchdata = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/users`, {
+        params: {
+          page: currentpage,
+          search: search || undefined,
+        },
+
+
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setdata(response.data.data.data)
+      setcurrentpage(response.data.data.current_page)
+      setlastpage(response.data.data.last_page)
+    } catch (error) {
+      toast.error("user data fetching failed try again...")
+    }
+  }
+
 
   const performAction = async (id: number) => {
     try {
@@ -98,6 +115,20 @@ const ManageUsers: React.FC = () => {
         />
         <main className={styles.main}>
           <div className={styles.container}>
+            {/* search start */}
+            <div className={styles.searchBox}>
+              <input
+                type="text"
+                placeholder="Search user by email..."
+                value={search}
+                onChange={(e) => {
+                  setsearch(e.target.value);
+                  setcurrentpage(1);
+                }}
+              />
+            </div>
+
+
             <h2 className={styles.title}>Manage Users</h2>
 
             <div className={styles.card}>
@@ -113,6 +144,16 @@ const ManageUsers: React.FC = () => {
                 </thead>
 
                 <tbody>
+
+                  {data.length === 0 && (
+                    <tr>
+                      <td colSpan={5} style={{ textAlign: "center" }}>
+                        No users found
+                      </td>
+                    </tr>
+                  )}
+
+
                   {Array.isArray(data) && data.map((value) => (
                     <tr key={value.id}>
                       <td>{value.id}</td>
@@ -136,7 +177,7 @@ const ManageUsers: React.FC = () => {
                 </tbody>
               </table>
 
-              
+
               <div className={styles.pagination}>
                 <button
                   disabled={currentpage === 1}

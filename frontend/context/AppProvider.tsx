@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 
 interface AppProviderType {
     isloading: boolean,
+    setisloading: (value: boolean) => void,
     authToken: string | null,
     role: "admin" | "user" | null
     login: (email: string, password: string) => Promise<void>,
@@ -125,7 +126,7 @@ export const AppProvider = ({
     }
 
     return (
-        <AppContext.Provider value={{ login, register, isloading, authToken, logout, role }}>
+        <AppContext.Provider value={{ login, register, isloading, authToken, logout, role, setisloading }}>
             {isloading ? <Loader /> : children}
         </AppContext.Provider>
     )

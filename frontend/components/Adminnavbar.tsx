@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
     Home,
     BarChart3,
@@ -11,6 +11,8 @@ import {
     Package,
     CreditCard,
     LogOut,
+    Menu,
+    X,
     type LucideIcon
 } from "lucide-react";
 import { myAppHook } from "@/context/AppProvider";
@@ -22,6 +24,8 @@ interface SidebarProps {
     setActiveNav: (id: string) => void;
     sidebarCollapsed: boolean;
     setSidebarCollapsed: (val: boolean) => void;
+    mobileOpen?: boolean;
+    setMobileOpen?: (val: boolean) => void;
 }
 
 interface NavLinkProps {
@@ -31,14 +35,22 @@ interface NavLinkProps {
     isActive: boolean;
     onClick: (id: string) => void;
     collapsed: boolean;
+    onMobileClose?: () => void;
 }
 
 // Internal NavLink component to satisfy the "component" requirement 
 // while keeping everything in one file.
-const NavLink: React.FC<NavLinkProps> = ({ id, label, icon: Icon, isActive, onClick, collapsed }) => {
+const NavLink: React.FC<NavLinkProps> = ({ id, label, icon: Icon, isActive, onClick, collapsed, onMobileClose }) => {
+    const handleClick = () => {
+        onClick(id);
+        if (onMobileClose) {
+            onMobileClose();
+        }
+    };
+
     return (
         <button
-            onClick={() => onClick(id)}
+            onClick={handleClick}
             className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             title={collapsed ? label : undefined}
         >
@@ -56,9 +68,16 @@ const AdminSidebar: React.FC<SidebarProps> = ({
     setActiveNav,
     sidebarCollapsed,
     setSidebarCollapsed,
+    mobileOpen: propMobileOpen,
+    setMobileOpen: propSetMobileOpen,
 }) => {
     const { logout } = myAppHook();
     const router = useRouter();
+
+    // Internal state for mobile menu if not provided via props
+    const [internalMobileOpen, setInternalMobileOpen] = useState(false);
+    const mobileOpen = propMobileOpen !== undefined ? propMobileOpen : internalMobileOpen;
+    const setMobileOpen = propSetMobileOpen || setInternalMobileOpen;
 
     const handleNavigation = (id: string) => {
         setActiveNav(id);
@@ -69,90 +88,115 @@ const AdminSidebar: React.FC<SidebarProps> = ({
         if (id === 'deliverdorders') router.push('/admin/deliverdorders');
     };
 
+    const closeMobileMenu = () => {
+        setMobileOpen(false);
+    };
+
+
     return (
-        <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.sidebarCollapsed : ""}`}>
-            <div className={styles.logo}>
-                <div className={styles.logoIcon}>A</div>
-                {!sidebarCollapsed && (
-                    <div className={styles.logoText}>
-                        <h1>Admin</h1>
-                        <p>Dashboard</p>
-                    </div>
-                )}
-            </div>
-
-            <nav className={styles.nav}>
-                <NavLink
-                    id="dashboard"
-                    label="Dashboard"
-                    icon={Home}
-                    isActive={activeNav === "dashboard"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="adminprofile"
-                    label="Admin Profile"
-                    icon={Users}
-                    isActive={activeNav === "adminprofile"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="manageuser"
-                    label="Manage User"
-                    icon={Users}
-                    isActive={activeNav === "manageuser"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="pendingorders"
-                    label="Pending Orders"
-                    icon={Package}
-                    isActive={activeNav === "pendingorders"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="deliverdorders"
-                    label="Delivered Orders"
-                    icon={Package}
-                    isActive={activeNav === "deliverdorders"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-                <NavLink
-                    id="settings"
-                    label="Settings"
-                    icon={Settings}
-                    isActive={activeNav === "settings"}
-                    onClick={handleNavigation}
-                    collapsed={sidebarCollapsed}
-                />
-
-                {/* Logout Button as a Nav Item equivalent */}
-                <button
-                    onClick={logout}
-                    className={styles.navItem}
-                    style={{ marginTop: 'auto', color: '#ef4444' }}
-                    title={sidebarCollapsed ? "Logout" : undefined}
-                >
-                    <LogOut size={20} className={styles.itemIcon} />
-                    {!sidebarCollapsed && <span className={styles.itemLabel}>Logout</span>}
-                </button>
-            </nav>
-
+        <>
+            {/* Mobile Toggle Button */}
             <button
-                className={styles.collapseBtn}
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className={styles.mobileToggle}
+                onClick={() => setMobileOpen(!mobileOpen)}
+                aria-label="Toggle menu"
             >
-                <ChevronRight
-                    size={20}
-                    className={sidebarCollapsed ? "" : styles.rotate}
-                />
+                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-        </aside>
+
+            {/* Overlay for mobile */}
+            {mobileOpen && (
+                <div
+                    className={styles.overlay}
+                    onClick={closeMobileMenu}
+                />
+            )}
+
+            <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.sidebarCollapsed : ""} ${mobileOpen ? styles.mobileOpen : ""}`}>
+                <div className={styles.logo}>
+                    <div className={styles.logoIcon}>A</div>
+                    {!sidebarCollapsed && (
+                        <div className={styles.logoText}>
+                            <h1>Admin</h1>
+                            <p>Dashboard</p>
+                        </div>
+                    )}
+                </div>
+
+                <nav className={styles.nav}>
+                    <NavLink
+                        id="dashboard"
+                        label="Dashboard"
+                        icon={Home}
+                        isActive={activeNav === "dashboard"}
+                        onClick={handleNavigation}
+                        collapsed={sidebarCollapsed}
+                        onMobileClose={closeMobileMenu}
+                    />
+                    <NavLink
+                        id="adminprofile"
+                        label="Admin Profile"
+                        icon={Users}
+                        isActive={activeNav === "adminprofile"}
+                        onClick={handleNavigation}
+                        collapsed={sidebarCollapsed}
+                        onMobileClose={closeMobileMenu}
+                    />
+                    <NavLink
+                        id="manageuser"
+                        label="Manage User"
+                        icon={Users}
+                        isActive={activeNav === "manageuser"}
+                        onClick={handleNavigation}
+                        collapsed={sidebarCollapsed}
+                        onMobileClose={closeMobileMenu}
+                    />
+                    <NavLink
+                        id="pendingorders"
+                        label="Pending Orders"
+                        icon={Package}
+                        isActive={activeNav === "pendingorders"}
+                        onClick={handleNavigation}
+                        collapsed={sidebarCollapsed}
+                        onMobileClose={closeMobileMenu}
+                    />
+                    <NavLink
+                        id="deliverdorders"
+                        label="Delivered Orders"
+                        icon={Package}
+                        isActive={activeNav === "deliverdorders"}
+                        onClick={handleNavigation}
+                        collapsed={sidebarCollapsed}
+                        onMobileClose={closeMobileMenu}
+                    />
+
+
+                    {/* Logout Button as a Nav Item equivalent */}
+                    <button
+                        onClick={() => {
+                            logout();
+                            closeMobileMenu();
+                        }}
+                        className={styles.navItem}
+                        style={{ marginTop: 'auto', color: '#ef4444' }}
+                        title={sidebarCollapsed ? "Logout" : undefined}
+                    >
+                        <LogOut size={20} className={styles.itemIcon} />
+                        {!sidebarCollapsed && <span className={styles.itemLabel}>Logout</span>}
+                    </button>
+                </nav>
+
+                <button
+                    className={styles.collapseBtn}
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                >
+                    <ChevronRight
+                        size={20}
+                        className={sidebarCollapsed ? "" : styles.rotate}
+                    />
+                </button>
+            </aside>
+        </>
     );
 };
 

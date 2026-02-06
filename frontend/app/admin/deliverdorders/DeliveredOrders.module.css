@@ -61,3 +61,102 @@
   width: 100%;
   padding: 40px;
 }
+
+
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .main {
+    padding: 20px;
+    margin-top: 60px;
+    /* Account for mobile toggle button */
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 15px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 4px;
+    font-size: 0.7rem;
+    word-break: break-word;
+  }
+
+  .table th {
+    font-size: 0.65rem;
+  }
+
+  .delivered {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .card {
+    padding: 8px;
+  }
+
+  .table {
+    font-size: 0.65rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px 2px;
+    font-size: 0.6rem;
+  }
+
+  .table th {
+    font-size: 0.55rem;
+  }
+
+  .delivered {
+    padding: 3px 6px;
+    font-size: 0.55rem;
+  }
+}

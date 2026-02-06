@@ -8,10 +8,15 @@ use Illuminate\Http\Request;
 
 class UserManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $users = User::paginate(4);
+            $query = User::query();
+            if($request->filled('search')){
+                $query->where('email','LIKE','%' . $request->search . '%');
+            }
+
+            $users = $query->paginate(4);
             return response()->json([
                 'status' => true,
                 'message' => 'Users retrieved successfully',

@@ -157,3 +157,164 @@
   font-size: 14px;
   color: #4b5563;
 }
+
+
+.searchBox {
+  margin-bottom: 1rem;
+}
+
+.searchBox input {
+  width: 280px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .main {
+    padding: 20px;
+    margin-top: 60px;
+    /* Account for mobile toggle button */
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px 6px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 15px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .searchBox {
+    margin-bottom: 1.5rem;
+  }
+
+  .searchBox input {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 4px;
+    font-size: 0.7rem;
+    word-break: break-word;
+  }
+
+  .table th {
+    font-size: 0.65rem;
+  }
+
+  .active,
+  .blocked {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .blockBtn,
+  .unblockBtn {
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pageBtn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .card {
+    padding: 8px;
+  }
+
+  .table {
+    font-size: 0.65rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px 2px;
+    font-size: 0.6rem;
+  }
+
+  .table th {
+    font-size: 0.55rem;
+  }
+
+  .active,
+  .blocked {
+    padding: 3px 6px;
+    font-size: 0.55rem;
+  }
+
+  .blockBtn,
+  .unblockBtn {
+    padding: 4px 6px;
+    font-size: 0.6rem;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pageBtn {
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .pageInfo {
+    order: -1;
+    /* Move page info to top */
+    font-size: 12px;
+  }
+}

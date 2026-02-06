@@ -49,7 +49,7 @@ class BookingController extends Controller
     {
         $data = $request->validate([
             'fullname'        => 'required|string|max:100',
-            'mob_number'      => 'required|string|max:15',
+            'mob_number'      => 'required|string|max:10',
             'address'         => 'required|string',
             'delivery_date'   => 'required|date|after_or_equal:today',
             'quantity'        => 'required|integer|min:1',
@@ -58,9 +58,11 @@ class BookingController extends Controller
 
         // Handle file upload
         if ($request->hasFile('address_proff')) {
-            $data['address_proff'] = $request
+            $path = $request
                 ->file('address_proff')
                 ->store('address_proofs', 'public');
+            $data['address_proff']  = asset('storage/' . $path);
+
         }
 
         $data['user_id'] = Auth::id();

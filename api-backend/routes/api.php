@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\UserMessageController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,5 +65,9 @@ Route::middleware(["auth:sanctum", "role:admin"])->group(function () {
         'admin/bookings/alert',
         [AdminMessageController::class, 'alertUser']
     );
+
+    Route::get('/admin/dashboard-stats', [AdminDashboardController::class, 'dashboardStats']);
+
+
 
 });

@@ -78,7 +78,7 @@
 
 .singlebtn {
   background: #82887f;
-  color: black;
+  color: white;
   border: none;
   padding: 8px 14px;
   border-radius: 10px;
@@ -93,4 +93,122 @@
 .ongoingBtn {
   background-color: red;
   cursor: not-allowed;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .main {
+    padding: 20px;
+    margin-top: 60px;
+    /* Account for mobile toggle button */
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px 6px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 15px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 3px;
+    font-size: 0.68rem;
+    word-break: break-word;
+  }
+
+  .table th {
+    font-size: 0.63rem;
+  }
+
+  .pending {
+    padding: 4px 8px;
+    font-size: 0.63rem;
+    white-space: nowrap;
+  }
+
+  .viewBtn,
+  .singlebtn {
+    padding: 5px 7px;
+    font-size: 0.68rem;
+    margin-left: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .card {
+    padding: 8px;
+  }
+
+  .table {
+    font-size: 0.6rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px 2px;
+    font-size: 0.58rem;
+  }
+
+  .table th {
+    font-size: 0.53rem;
+  }
+
+  .pending {
+    padding: 3px 5px;
+    font-size: 0.53rem;
+  }
+
+  .viewBtn,
+  .singlebtn {
+    padding: 4px 5px;
+    font-size: 0.58rem;
+    margin-left: 0;
+    display: block;
+    margin-bottom: 3px;
+    width: 100%;
+  }
+
+  .singlebtn {
+    margin-bottom: 0;
+  }
 }

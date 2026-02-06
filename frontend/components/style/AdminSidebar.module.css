@@ -138,3 +138,104 @@
 .rotate {
   transform: rotate(180deg);
 }
+
+/* Mobile Toggle Button */
+.mobileToggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  color: #1f2937;
+}
+
+.mobileToggle:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+/* Overlay */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 60;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+
+  /* Show mobile toggle button on tablets and mobile */
+  .mobileToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Show overlay when mobile menu is open */
+  .overlay {
+    display: block;
+  }
+
+  /* Hide sidebar by default on mobile/tablet */
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    z-index: 70;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Show sidebar when mobile menu is open */
+  .sidebar.mobileOpen {
+    left: 0;
+  }
+
+  /* Ensure sidebar is full width when not collapsed on mobile */
+  .sidebar.sidebarCollapsed {
+    width: 280px;
+    padding: 1.5rem;
+  }
+
+  /* Always show labels on mobile even when "collapsed" */
+  .sidebar.sidebarCollapsed .logoText {
+    display: flex;
+    opacity: 1;
+  }
+
+  .sidebar.sidebarCollapsed .itemLabel {
+    display: inline;
+  }
+
+  /* Hide the collapse button on mobile */
+  .collapseBtn {
+    display: none;
+  }
+}
+
+/* For very small mobile devices */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 85%;
+    max-width: 280px;
+  }
+
+  .sidebar.sidebarCollapsed {
+    width: 85%;
+    max-width: 280px;
+  }
+}

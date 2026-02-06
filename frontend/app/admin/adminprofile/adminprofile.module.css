@@ -70,3 +70,64 @@
   padding: 40px;
   background-color: #f8fafc;
 }
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .main {
+    padding: 20px;
+    margin-top: 60px;
+    /* Account for mobile toggle button */
+  }
+
+  .profileContainer {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 15px;
+  }
+
+  .profileContainer {
+    min-height: 80vh;
+    padding: 10px;
+  }
+
+  .profileImage {
+    width: 120px;
+    height: 120px;
+  }
+
+  .username {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .profileImage {
+    width: 100px;
+    height: 100px;
+  }
+
+  .username {
+    font-size: 16px;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}

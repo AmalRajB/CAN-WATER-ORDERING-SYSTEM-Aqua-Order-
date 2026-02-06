@@ -28,7 +28,7 @@ export default function ViewsingleOreder() {
     const router = useRouter();
     const { authToken } = myAppHook();
     const API_URL = process.env.NEXT_PUBLIC_API_URL!;
-
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [bookingData, setBookingData] = useState<BookingType>({
         fullname: "",
         mob_number: "",
@@ -56,6 +56,7 @@ export default function ViewsingleOreder() {
                         }
                     })
                 setBookingData(response.data)
+                console.log(bookingData.address_proff)
 
 
             } catch (error) {
@@ -119,13 +120,24 @@ export default function ViewsingleOreder() {
                 </div>
 
                 <div className={styles.imageWrapper}>
-                    <img
-                        src={bookingData.address_proff}
-                        alt="Address Proof"
-                        width={120}
-                        height={120}
-                        style={{ objectFit: "cover" }}
-                    />
+                    {bookingData.address_proff ? (
+                        <img
+                            src={
+                                bookingData.address_proff.startsWith('http')
+                                    ? bookingData.address_proff
+                                    : `http://127.0.0.1:8000/storage/${bookingData.address_proff}`
+                            }
+                            onClick={() =>
+                                setPreviewImage(bookingData.address_proff.startsWith("http")
+                                    ? bookingData.address_proff
+                                    : `http://127.0.0.1:8000/storage/${bookingData.address_proff}`)
+                            }
+                        />
+                    ) : (
+                        <p> No address proof uploaded </p>
+
+
+                    )}
                 </div>
 
                 <div className={styles.action}>
@@ -140,7 +152,40 @@ export default function ViewsingleOreder() {
 
                 </div>
             </div>
-         
+
+            {previewImage && (
+                <div
+                    onClick={() => setPreviewImage(null)}
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(0,0,0,0.8)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 9999,
+                        cursor: "zoom-out",
+                    }}
+                >
+                    <img
+                        src={previewImage}
+                        alt="Full Address Proof"
+                        style={{
+                            maxWidth: "95%",
+                            maxHeight: "95%",
+                            objectFit: "contain",
+                            background: "#fff",
+                            borderRadius: "8px",
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </div>
+            )}
+
+
 
 
 

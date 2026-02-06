@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -14,12 +13,13 @@ interface MessageType {
     booking_id: number;
     message: string;
     created_at: string;
+    // isloading: boolean;
 }
 
 const NotificationPage = () => {
 
 
-    const { authToken } = myAppHook();
+    const { authToken, setisloading } = myAppHook();
     const router = useRouter();
     const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
     const [message, setmessage] = useState<MessageType[]>([])
@@ -31,42 +31,43 @@ const NotificationPage = () => {
     }, [authToken, router])
 
     useEffect(() => {
-        const fetchNotification = async () => {
+        if (!authToken) return;
 
+        const fetchNotification = async () => {
+            // setisloading(true);
             try {
-                const response = await axios.get(`${API_URL}/notifications`,
+                const response = await axios.get(
+                    `${API_URL}/notifications`,
                     {
                         headers: {
                             Authorization: `Bearer ${authToken}`,
-                        }
-                    })
-                setmessage(response.data.data)
+                        },
+                    }
+                );
+                setmessage(response.data.data);
             } catch (error) {
+                console.log(error);
+            } 
+        };
 
-                console.log(error)
-
-            }
-
-        }
-        if (authToken) {
-            fetchNotification();
-        }
-    }, [authToken, API_URL])
+        fetchNotification();
+    }, [authToken]);
 
 
-    const formatNotificationTime = (dateString:string) =>{
+
+    const formatNotificationTime = (dateString: string) => {
         const createdDate = new Date(dateString);
         const today = new Date();
 
-        const isToday = 
-        createdDate.getDate() === today.getDate()&&
-        createdDate.getMonth() === today.getMonth()&&
-        createdDate.getFullYear() === today.getFullYear();
+        const isToday =
+            createdDate.getDate() === today.getDate() &&
+            createdDate.getMonth() === today.getMonth() &&
+            createdDate.getFullYear() === today.getFullYear();
 
-        if(isToday){
-            return createdDate.toLocaleTimeString([],{
-                hour:"2-digit",
-                minute:"2-digit",
+        if (isToday) {
+            return createdDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
             });
         }
         return createdDate.toLocaleDateString();
