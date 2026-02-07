@@ -105,6 +105,7 @@ export const AppProvider = ({
                 password_confirmation
             });
             router.replace("/auth")
+            toast.success("registration success...")
 
         } catch (error) {
             console.log(error)

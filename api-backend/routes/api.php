@@ -42,6 +42,8 @@ Route::middleware(["auth:sanctum", "role:user"])->group(function () {
     // User bookings only
     // Route::apiResource("bookings", BookingController::class);
     Route::get('notifications', [UserMessageController::class, 'myNotifications']);
+    Route::get('notifications/unreaded',[UserMessageController::class, 'unreadCount']);
+    Route::post('notifications/readed', [UserMessageController::class, 'markAsRead']);
 
 });
 

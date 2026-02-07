@@ -3,6 +3,7 @@
 import React from "react";
 import AdminSidebar from "../../../components/Adminnavbar"
 import DashboardStatusChart from "@/components/DashboardStatusChart";
+import Loader from "@/components/loader"
 import { Users, Package, PackageCheck, Clock } from "lucide-react";
 import styles from "./AdminDashboard.module.css";
 import { myAppHook } from "@/context/AppProvider";
@@ -25,6 +26,8 @@ export default function AdminDashboard() {
     const router = useRouter();
     const [stats, setStats] = useState<StatDataType | null>(null)
     const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         if (!authToken) {
@@ -35,6 +38,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         const fetchdata = async () => {
+            setLoading(true)
             try {
                 const response = await axios.get(`${API_URL}/admin/dashboard-stats`,
                     {
@@ -48,6 +52,8 @@ export default function AdminDashboard() {
             } catch (error) {
                 console.log(error)
 
+            } finally {
+                setLoading(false)
             }
 
         }
@@ -61,28 +67,24 @@ export default function AdminDashboard() {
         {
             title: "Delivered Orders",
             value: stats?.delivered_bookings ?? 0,
-            // change: "+12.5%",
             trend: "up",
             icon: PackageCheck,
         },
         {
             title: "Active Users",
             value: stats?.total_active_users ?? 0,
-            // change: "+8.2%",
             trend: "up",
             icon: Users,
         },
         {
             title: "Pending Orders",
             value: stats?.pending_bookings ?? 0,
-            // change: "-3.1%",
             trend: "down",
             icon: Clock,
         },
         {
             title: "Total Water Can Sold",
             value: stats?.total_water_cans_sold ?? 0,
-            // change: "+5.7%",
             trend: "up",
             icon: Package,
         },
@@ -98,45 +100,59 @@ export default function AdminDashboard() {
                 setSidebarCollapsed={setSidebarCollapsed}
             />
 
+
+
             {/* Main */}
             <main className={`${styles.main} ${sidebarCollapsed ? styles.mainCollapsed : ""}`}>
-                <div className={styles.content}>
-                    {activeNav === 'dashboard' && (
-                        <div className={styles.statsGrid}>
-                            {statsCards.map((stat, i) => {
-                                const Icon = stat.icon;
-                                return (
-                                    <div key={stat.title} className={styles.statCard} style={{ animationDelay: `${i * 0.1}s` }}>
-                                        <div className={styles.statHeader}>
-                                            <div className={styles.statIcon}>
-                                                <Icon />
-                                            </div>
-                                        </div>
-                                        <h4>{stat.title}</h4>
-                                        <p>{stat.value}</p>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                    {stats && (
-                        <div style={{ marginTop: "2rem" }}>
-                            <DashboardStatusChart
-                                delivered={stats.delivered_bookings}
-                                pending={stats.pending_bookings}
-                                sold={Number(stats.total_water_cans_sold)}
-                            />
-                        </div>
-                    )}
+                {loading ? (
+                    <div className={styles.loaderWrapper}>
+                        <Loader />
+                    </div>
+                ) : (
 
-                    {activeNav !== 'dashboard' && (
-                        <div style={{ padding: '2rem', textAlign: 'center', color: '#80746b' }}>
-                            <h2>{activeNav.charAt(0).toUpperCase() + activeNav.slice(1)} Component</h2>
-                            <p>This component is not yet implemented.</p>
-                        </div>
-                    )}
-                </div>
+                    <div className={styles.content}>
+                        {activeNav === 'dashboard' && (
+                            <div className={styles.statsGrid}>
+                                {statsCards.map((stat, i) => {
+                                    const Icon = stat.icon;
+                                    return (
+                                        <div key={stat.title} className={styles.statCard} style={{ animationDelay: `${i * 0.1}s` }}>
+                                            <div className={styles.statHeader}>
+                                                <div className={styles.statIcon}>
+                                                    <Icon />
+                                                </div>
+                                            </div>
+                                            <h4>{stat.title}</h4>
+                                            <p>{stat.value}</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                        {stats && (
+                            <div style={{ marginTop: "2rem" }}>
+                                <DashboardStatusChart
+                                    delivered={stats.delivered_bookings}
+                                    pending={stats.pending_bookings}
+                                    sold={Number(stats.total_water_cans_sold)}
+                                />
+                            </div>
+                        )}
+
+                        {activeNav !== 'dashboard' && (
+                            <div style={{ padding: '2rem', textAlign: 'center', color: '#80746b' }}>
+                                <h2>{activeNav.charAt(0).toUpperCase() + activeNav.slice(1)} Component</h2>
+                                <p>This component is not yet implemented.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+
             </main>
+
+
         </div>
+
     );
 }

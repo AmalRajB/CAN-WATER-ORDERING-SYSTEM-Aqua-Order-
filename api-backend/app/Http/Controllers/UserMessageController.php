@@ -20,4 +20,28 @@ class UserMessageController extends Controller
             'data' => $messages
         ]);
     }
+
+    public function unreadCount()
+    {
+        $count = AdminMessage::where('user_id',auth()->id())
+            ->where('is_read',false)
+            ->count();
+
+        return response()->json([
+            'status'=>true,
+            'unread_count'=>$count
+        ]);    
+    }
+
+    public function markAsRead()
+    {
+        AdminMessage::where('user_id',auth()->id())
+            ->where('is_read',false)
+            ->update(['is_read'=>true]);
+
+        return response()->json([
+            'status'=>true,
+            'message'=>'notification marked as read'
+        ]);
+    }
 }

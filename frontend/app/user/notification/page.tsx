@@ -3,6 +3,7 @@
 import styles from "./NotificationPage.module.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
+import Loader from "@/components/loader"
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -13,16 +14,19 @@ interface MessageType {
     booking_id: number;
     message: string;
     created_at: string;
-    // isloading: boolean;
+    isloading: boolean,
+    setisloading: (value: boolean) => void,
+
 }
 
 const NotificationPage = () => {
 
 
-    const { authToken, setisloading } = myAppHook();
+    const { authToken } = myAppHook();
     const router = useRouter();
     const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
     const [message, setmessage] = useState<MessageType[]>([])
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!authToken) {
@@ -31,10 +35,9 @@ const NotificationPage = () => {
     }, [authToken, router])
 
     useEffect(() => {
-        if (!authToken) return;
 
         const fetchNotification = async () => {
-            // setisloading(true);
+            setLoading(true)
             try {
                 const response = await axios.get(
                     `${API_URL}/notifications`,
@@ -47,11 +50,27 @@ const NotificationPage = () => {
                 setmessage(response.data.data);
             } catch (error) {
                 console.log(error);
-            } 
+            } finally {
+                setLoading(false)
+            }
         };
 
         fetchNotification();
-    }, [authToken]);
+    }, [authToken, API_URL]);
+
+
+    useEffect(() => {
+        if (!authToken) return;
+
+        axios.post(`${API_URL}/notifications/readed`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            }
+        );
+    }, [authToken])
 
 
 
@@ -80,36 +99,44 @@ const NotificationPage = () => {
     return (
         <>
             <Navbar />
-            <div className={styles.notificationContainer}>
-                <h2 className={styles.pageTitle}>Notifications</h2>
 
-                {message.length === 0 ? (
-                    <div className={styles.emptyState}>
-                        No notifications available.
-                    </div>
-                ) : (
-                    message.map((item) => (
-                        <div key={item.id} className={styles.notificationItem}>
-                            <div className={styles.orderHeader}>
-                                Order ID: #{item.booking_id}
-                            </div>
+            {loading ? (
+                <div className={styles.loaderWrapper}>
+                    <Loader /> 
+                </div>
+            ) : (
+                <div className={styles.notificationContainer}>
+                    <h2 className={styles.pageTitle}>Notifications</h2>
 
-                            <div
-                                className={`${styles.messageBubble} ${styles.adminMessage}`}
-                                style={{ marginTop: "10px" }}
-                            >
-                                <div className={styles.sender}>Admin</div>
-                                {item.message}
-                                <div className={styles.time}> {formatNotificationTime(item.created_at)}</div>
-                            </div>
+                    {message.length === 0 ? (
+                        <div className={styles.emptyState}>
+                            No notifications available.
                         </div>
-                    ))
-                )}
-            </div>
+                    ) : (
+                        message.map((item) => (
+                            <div key={item.id} className={styles.notificationItem}>
+                                <div className={styles.orderHeader}>
+                                    Order ID: #{item.booking_id}
+                                </div>
+
+                                <div
+                                    className={`${styles.messageBubble} ${styles.adminMessage}`}
+                                    style={{ marginTop: "10px" }}
+                                >
+                                    <div className={styles.sender}>Admin</div>
+                                    {item.message}
+                                    <div className={styles.time}>
+                                        {formatNotificationTime(item.created_at)}
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
+
             <Footer />
         </>
-
-
     );
 };
 

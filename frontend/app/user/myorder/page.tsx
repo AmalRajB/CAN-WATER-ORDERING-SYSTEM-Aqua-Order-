@@ -2,6 +2,7 @@
 
 import styles from "./MyOrders.module.css";
 import Navbar from "@/components/Navbar";
+import Loader from "@/components/loader"
 import Footer from "@/components/footer";
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,8 @@ const MyOrders: React.FC = () => {
     const router = useRouter()
     const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
     const [order, setorder] = useState<OrderType[]>([]);
+    const [loading, setLoading] = useState(true);
+
 
 
     useEffect(() => {
@@ -43,6 +46,7 @@ const MyOrders: React.FC = () => {
     useEffect(() => {
 
         const fetchorder = async () => {
+            setLoading(true)
             try {
                 const response = await axios.get(`${API_URL}/bookings?status=pending`,
                     {
@@ -57,6 +61,8 @@ const MyOrders: React.FC = () => {
             } catch (error) {
                 toast.error("can't fetch the order try again..")
 
+            } finally {
+                setLoading(false)
             }
 
         }
@@ -92,42 +98,51 @@ const MyOrders: React.FC = () => {
     return (
         <>
             <Navbar />
-            <div style={{ minHeight: "90vh", padding: "20px 0" }}>
-                <div className={styles.ordersContainer}>
 
-
-                    {order?.length === 0 && (
-                        <p>No pending orders found.</p>
-                    )}
-
-                    {order.map((value) => (
-                        <div key={value.id} className={styles.orderCard}>
-                            <div className={styles.orderInfo}>
-                                <p><strong>OrderID:</strong> {value.id}</p>
-                                <p><strong>Name:</strong> {value.fullname}</p>
-                                <p><strong>Address:</strong> {value.address}</p>
-                                <p><strong>Delivery Date:</strong> {value.delivery_date}</p>
-                                <p><strong>Quantity:</strong> {value.quantity} cans</p>
-                                <p><strong>Status:</strong> <span className="text-warning"> {value.status}</span></p>
-                            </div>
-                            <div className={styles.orderActions}>
-                                <button
-                                    className={`${styles.btn} ${styles.btnUpdate}`}
-                                    onClick={() => router.push(`/user/bookingupdate/${value.id}`)}
-                                >
-                                    Update
-                                </button>
-                                <button
-                                    className={`${styles.btn} ${styles.btnCancel}`}
-                                    onClick={() => deleteOrder(value.id)}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+            {loading ? (
+                <div className={styles.loaderWrapper}>
+                    <Loader />
                 </div>
-            </div>
+            ) : (
+
+                <div style={{ minHeight: "90vh", padding: "20px 0" }}>
+                    <div className={styles.ordersContainer}>
+
+
+                        {order?.length === 0 && (
+                            <p>No pending orders found.</p>
+                        )}
+
+                        {order.map((value) => (
+                            <div key={value.id} className={styles.orderCard}>
+                                <div className={styles.orderInfo}>
+                                    <p><strong>OrderID:</strong> {value.id}</p>
+                                    <p><strong>Name:</strong> {value.fullname}</p>
+                                    <p><strong>Address:</strong> {value.address}</p>
+                                    <p><strong>Delivery Date:</strong> {value.delivery_date}</p>
+                                    <p><strong>Quantity:</strong> {value.quantity} cans</p>
+                                    <p><strong>Status:</strong> <span className="text-warning"> {value.status}</span></p>
+                                </div>
+                                <div className={styles.orderActions}>
+                                    <button
+                                        className={`${styles.btn} ${styles.btnUpdate}`}
+                                        onClick={() => router.push(`/user/bookingupdate/${value.id}`)}
+                                    >
+                                        Update
+                                    </button>
+                                    <button
+                                        className={`${styles.btn} ${styles.btnCancel}`}
+                                        onClick={() => deleteOrder(value.id)}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <Footer />
         </>
     );

@@ -71,6 +71,13 @@
   background-color: #f8fafc;
 }
 
+.loaderWrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .main {

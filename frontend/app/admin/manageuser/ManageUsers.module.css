@@ -169,6 +169,12 @@
   border-radius: 6px;
   border: 1px solid #ccc;
 }
+.loaderWrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* Responsive Styles */
 @media (max-width: 1024px) {

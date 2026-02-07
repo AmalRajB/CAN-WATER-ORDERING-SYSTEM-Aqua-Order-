@@ -3,11 +3,12 @@
 import React from "react";
 import styles from "./ManageUsers.module.css";
 import AdminSidebar from "@/components/Adminnavbar";
+import Loader from "@/components/loader"
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState  } from "react";
 
 
 
@@ -31,7 +32,6 @@ const ManageUsers: React.FC = () => {
 
 
 
-
   useEffect(() => {
     if (!authToken) {
       router.replace("/auth")
@@ -51,15 +51,16 @@ const ManageUsers: React.FC = () => {
   }, [search])
 
 
-  useEffect(()=>{
-    if(authToken){
+  useEffect(() => {
+    if (authToken) {
       fetchdata();
     }
-  },[authToken, currentpage])
+  }, [authToken, currentpage])
 
 
 
   const fetchdata = async () => {
+
     try {
       const response = await axios.get(`${API_URL}/admin/users`, {
         params: {
@@ -77,6 +78,7 @@ const ManageUsers: React.FC = () => {
       setlastpage(response.data.data.last_page)
     } catch (error) {
       toast.error("user data fetching failed try again...")
+    } finally {
     }
   }
 
@@ -114,94 +116,94 @@ const ManageUsers: React.FC = () => {
           setSidebarCollapsed={setSidebarCollapsed}
         />
         <main className={styles.main}>
-          <div className={styles.container}>
-            {/* search start */}
-            <div className={styles.searchBox}>
-              <input
-                type="text"
-                placeholder="Search user by email..."
-                value={search}
-                onChange={(e) => {
-                  setsearch(e.target.value);
-                  setcurrentpage(1);
-                }}
-              />
-            </div>
-
-
-            <h2 className={styles.title}>Manage Users</h2>
-
-            <div className={styles.card}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-
-                  {data.length === 0 && (
-                    <tr>
-                      <td colSpan={5} style={{ textAlign: "center" }}>
-                        No users found
-                      </td>
-                    </tr>
-                  )}
-
-
-                  {Array.isArray(data) && data.map((value) => (
-                    <tr key={value.id}>
-                      <td>{value.id}</td>
-                      <td>{value.name}</td>
-                      <td>{value.email}</td>
-                      <td>
-                        <span className={value.is_active ? styles.active : styles.blocked}>
-                          {value.is_active ? "Active" : "Blocked"}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          className={value.is_active ? styles.blockBtn : styles.unblockBtn}
-                          onClick={() => performAction(value.id)}
-                        >
-                          {value.is_active ? "Block" : "Unblock"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-
-              <div className={styles.pagination}>
-                <button
-                  disabled={currentpage === 1}
-                  onClick={() => setcurrentpage(prev => prev - 1)}
-                >
-                  Previous
-                </button>
-
-                <span>
-                  Page {currentpage} of {lastpage}
-                </span>
-
-                <button
-                  disabled={currentpage === lastpage}
-                  onClick={() => setcurrentpage(prev => prev + 1)}
-                >
-                  Next
-                </button>
+            <div className={styles.container}>
+              {/* search start */}
+              <div className={styles.searchBox}>
+                <input
+                  type="text"
+                  placeholder="Search user by email..."
+                  value={search}
+                  onChange={(e) => {
+                    setsearch(e.target.value);
+                    setcurrentpage(1);
+                  }}
+                />
               </div>
 
 
+              <h2 className={styles.title}>Manage Users</h2>
 
+              <div className={styles.card}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>User ID</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    {data.length === 0 && (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: "center" }}>
+                          No users found
+                        </td>
+                      </tr>
+                    )}
+
+
+                    {Array.isArray(data) && data.map((value) => (
+                      <tr key={value.id}>
+                        <td>{value.id}</td>
+                        <td>{value.name}</td>
+                        <td>{value.email}</td>
+                        <td>
+                          <span className={value.is_active ? styles.active : styles.blocked}>
+                            {value.is_active ? "Active" : "Blocked"}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className={value.is_active ? styles.blockBtn : styles.unblockBtn}
+                            onClick={() => performAction(value.id)}
+                          >
+                            {value.is_active ? "Block" : "Unblock"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+
+                <div className={styles.pagination}>
+                  <button
+                    disabled={currentpage === 1}
+                    onClick={() => setcurrentpage(prev => prev - 1)}
+                  >
+                    Previous
+                  </button>
+
+                  <span>
+                    Page {currentpage} of {lastpage}
+                  </span>
+
+                  <button
+                    disabled={currentpage === lastpage}
+                    onClick={() => setcurrentpage(prev => prev + 1)}
+                  >
+                    Next
+                  </button>
+                </div>
+
+
+
+              </div>
             </div>
-          </div>
         </main>
       </div>
 

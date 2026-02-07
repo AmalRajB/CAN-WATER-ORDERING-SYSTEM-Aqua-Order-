@@ -1,10 +1,45 @@
 "use client"
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
+import { myAppHook } from "@/context/AppProvider";
+import { useRouter } from "next/navigation";
+// import toast from "react-hot-toast";
+import axios from "axios";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
+  const { authToken } = myAppHook();
+  const router = useRouter();
+
+
+  useEffect(() => {
+    if (!authToken) {
+      router.replace('/auth')
+    }
+    const fetchmessageCount = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/notifications/unreaded`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            }
+          }
+        )
+        setUnreadCount(response.data.unread_count)
+      } catch (error) {
+        console.log(error)
+      }
+
+    };
+    if (authToken) {
+      fetchmessageCount();
+    }
+  }, [authToken])
+
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
@@ -50,11 +85,6 @@ const Navbar = () => {
               </Link>
             </li>
 
-            <li className="nav-item">
-              <Link href="/user/notification" className="nav-link">
-                Notification
-              </Link>
-            </li>
 
             <li className="nav-item">
               <Link href="/user/userorderhistory" className="nav-link">
@@ -62,8 +92,22 @@ const Navbar = () => {
               </Link>
             </li>
 
+            <li className="nav-item">
+              <Link href="/user/notification" className="nav-link">
+                <div className="notificationIcon">
+                  <Bell size={22} />
 
-            {/* <li className="nav-item ms-lg-3"> */}
+                  {unreadCount > 0 && (
+                    <span className="badge">
+                      {unreadCount}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            </li>
+
+
+
             <li className="nav-item">
               <Link className="btn btn-outline-light btn-sm" href="/user/userprofile" >
                 Profile

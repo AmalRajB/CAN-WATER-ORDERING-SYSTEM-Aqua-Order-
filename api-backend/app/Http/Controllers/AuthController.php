@@ -72,7 +72,7 @@ class AuthController extends Controller
             ]
         ]);
     }
-    //see profilr api
+    //see profile api
     public function profile(){
         $user = Auth::user();
 

@@ -2,6 +2,7 @@
 
 import styles from "./OrderHistory.module.css";
 import Navbar from "@/components/Navbar";
+import Loader from "@/components/loader"
 import Footer from "@/components/footer";
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
@@ -27,80 +28,87 @@ const OrderHistory = () => {
     const router = useRouter();
     const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
     const [DeliverdData, setDeliverdData] = useState<OrderType[]>([])
+    const [loading, setLoading] = useState(true);
 
-    useEffect(()=>{
-        if(!authToken){
+
+    useEffect(() => {
+        if (!authToken) {
             router.replace("/auth")
         }
-    },[authToken, router])
+    }, [authToken, router])
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        const fetchdata = async () =>{
-            try{
+        const fetchdata = async () => {
+            setLoading(true)
+            try {
                 const response = await axios.get(`${API_URL}/bookings?status=delivered`,
                     {
-                        headers:{
-                            Authorization:`Bearer ${authToken}`,
+                        headers: {
+                            Authorization: `Bearer ${authToken}`,
                         }
                     })
-                    setDeliverdData(response.data)
+                setDeliverdData(response.data)
 
-            }catch(error){
+            } catch (error) {
                 toast.error("data fetching failed try again...")
 
-            }}
-            if(authToken){
-                fetchdata();
+            } finally {
+                setLoading(false)
             }
+        }
+        if (authToken) {
+            fetchdata();
+        }
 
-    },[authToken, API_URL])
+    }, [authToken, API_URL])
 
 
 
     return (
         <>
             <Navbar />
-            <div className={styles.historyContainer}>
-                <h2 className={styles.pageTitle}>Order History</h2>
+            {loading ? (
+                <div className={styles.loaderWrapper}>
+                    <Loader />
+                </div>
+            ) : (
+                <div className={styles.historyContainer}>
+                    <h2 className={styles.pageTitle}>Order History</h2>
 
-                {DeliverdData.length === 0 ? (
-                    <div className={styles.emptyState}>
-                        No delivered orders yet.
-                    </div>
-                ) : (
-                    DeliverdData.map((data) => (
-                        <div key={data.id} className={styles.historyItem}>
-                            <div className={styles.statusColumn}>
-                                <div className={styles.statusBadge}>Delivered</div>
-                                <div className={styles.date}>{new Date(data.updated_at).toLocaleString()}</div>
-                            </div>
-
-                            <div className={styles.detailsColumn}>
-                                <div className={styles.detailsRow}>
-                                    <span className={styles.label}>Order ID</span>
-                                    <span className={styles.value}>#{data.id}</span>
-                                </div>
-
-                                <div className={styles.detailsRow}>
-                                    <span className={styles.label}>Delivery Address</span>
-                                    <span className={styles.value}>{data.address}</span>
-                                </div>
-
-                                <div className={styles.detailsRow}>
-                                    <span className={styles.label}>Can Quantity</span>
-                                    <span className={styles.value}>{data.quantity}</span>
-                                </div>
-
-                                {/* <div className={styles.detailsRow}>
-                                    <span className={styles.label}>Delivery Date</span>
-                                    <span className={styles.value}>{order.deliveryDate}</span>
-                                </div> */}
-                            </div>
+                    {DeliverdData.length === 0 ? (
+                        <div className={styles.emptyState}>
+                            No delivered orders yet.
                         </div>
-                    ))
-                )}
-            </div>
+                    ) : (
+                        DeliverdData.map((data) => (
+                            <div key={data.id} className={styles.historyItem}>
+                                <div className={styles.statusColumn}>
+                                    <div className={styles.statusBadge}>Delivered</div>
+                                    <div className={styles.date}>{new Date(data.updated_at).toLocaleString()}</div>
+                                </div>
+
+                                <div className={styles.detailsColumn}>
+                                    <div className={styles.detailsRow}>
+                                        <span className={styles.label}>Order ID</span>
+                                        <span className={styles.value}>#{data.id}</span>
+                                    </div>
+
+                                    <div className={styles.detailsRow}>
+                                        <span className={styles.label}>Delivery Address</span>
+                                        <span className={styles.value}>{data.address}</span>
+                                    </div>
+
+                                    <div className={styles.detailsRow}>
+                                        <span className={styles.label}>Can Quantity</span>
+                                        <span className={styles.value}>{data.quantity}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
             <Footer />
         </>
     );

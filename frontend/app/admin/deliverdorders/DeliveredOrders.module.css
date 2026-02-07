@@ -62,6 +62,13 @@
   padding: 40px;
 }
 
+.loaderWrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 
 /* Responsive Styles */
