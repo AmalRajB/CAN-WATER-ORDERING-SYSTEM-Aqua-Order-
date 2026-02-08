@@ -115,10 +115,10 @@ class BookingController extends Controller
                 'address_proff' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
             ]);
 
-            // ✅ HANDLE FILE UPDATE
+            //  HANDLE FILE UPDATE
             if ($request->hasFile('address_proff')) {
 
-                // 🔥 DELETE OLD FILE (SAFE)
+                //  DELETE OLD FILE (SAFE)
                 if ($booking->address_proff && !str_starts_with($booking->address_proff, 'http')) {
                     Storage::disk('public')->delete($booking->address_proff);
                 }
@@ -130,7 +130,7 @@ class BookingController extends Controller
 
             $booking->update($data);
 
-            // ✅ RETURN UPDATED DATA WITH IMAGE URL
+            //  RETURN UPDATED DATA WITH IMAGE URL
             return response()->json([
                 'message' => 'Booking updated successfully',
                 'booking' => [
