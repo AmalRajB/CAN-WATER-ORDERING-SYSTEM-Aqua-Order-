@@ -30,6 +30,7 @@ class BookingController extends Controller
         }
 
         $bookings = $query->latest()->get();
+        
 
         if($user->role ==='admin' && $request->status ==='pending'){
             $bookings = $bookings->map(function($booking){

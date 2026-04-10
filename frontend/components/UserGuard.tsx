@@ -15,13 +15,13 @@ export default function UserGuard({
     useEffect(() => {
         if (isloading) return
 
-        // ❌ Not logged in
+        //  Not logged in
         if (!authToken) {
             router.replace("/auth")
             return
         }
 
-        // 🔁 Logged in but wrong role
+        // Logged in but wrong role
         if (role === "admin") {
             router.replace("/admin/home")
         }

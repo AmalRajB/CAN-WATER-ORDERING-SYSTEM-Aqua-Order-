@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./ManageUsers.module.css";
 import AdminSidebar from "@/components/Adminnavbar";
-import Loader from "@/components/loader"
+// import Loader from "@/components/loader"
 import { myAppHook } from "@/context/AppProvider";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
